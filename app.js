@@ -10,6 +10,18 @@ const dishesRouter = require("./routes/dishesRouter");
 const promotionsRouter = require("./routes/promotionsRouter");
 const leadersRouter = require("./routes/leadersRouter");
 
+require("dotenv").config();
+const mongoose = require("mongoose");
+const url = process.env.MONGO_DB;
+mongoose
+  .connect(url)
+  .then((db) => {
+    console.log("Connected correctly to server.");
+  })
+  .catch((err) => {
+    console.error(err);
+  });
+
 const app = express();
 
 // view engine setup
