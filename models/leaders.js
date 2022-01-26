@@ -22,7 +22,11 @@ const leaderSchema = new Schema(
     },
     abbr: {
       type: String,
-      default: "",
+      require: true,
+    },
+    featured: {
+      type: Boolean,
+      default: false,
     },
   },
   {

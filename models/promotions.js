@@ -25,6 +25,10 @@ const promotionSchema = new Schema(
       min: 0,
       require: true,
     },
+    featured: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
