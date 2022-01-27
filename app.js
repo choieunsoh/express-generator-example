@@ -3,6 +3,8 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+const session = require("express-session");
+const FileStore = require("session-file-store")(session);
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
@@ -31,7 +33,16 @@ app.set("view engine", "jade");
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser("12345-67890-09876-54321"));
+//app.use(cookieParser("12345-67890-09876-54321"));
+app.use(
+  session({
+    name: "session-id",
+    secret: "12345-67890-09876-54321",
+    saveUninitialized: false,
+    resave: false,
+    store: new FileStore(),
+  })
+);
 
 const basicAuthen = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -45,7 +56,6 @@ const basicAuthen = (req, res, next) => {
       .toString()
       .split(":");
 
-    console.log(username, password);
     if (username === "admin" && password === "password") {
       next();
     } else {
@@ -74,7 +84,6 @@ const cookieBasicAuthen = (req, res, next) => {
         .toString()
         .split(":");
 
-      console.log(username, password);
       if (username === "admin" && password === "password") {
         res.cookie("user", "admin", { signed: true });
         next();
@@ -94,8 +103,47 @@ const cookieBasicAuthen = (req, res, next) => {
     next(err);
   }
 };
-// Cookie + Basic Auth
-app.use(cookieBasicAuthen);
+
+const sessionAuthen = (req, res, next) => {
+  console.log(req.session);
+  const sessionUser = req.session.user;
+  if (!sessionUser) {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      let err = new Error("You are not authenticated!");
+      err.status = 401;
+      res.setHeader("WWW-Authenticate", "Basic");
+      next(err);
+    } else {
+      const [username, password] = Buffer.from(
+        authHeader.split(" ")[1],
+        "base64"
+      )
+        .toString()
+        .split(":");
+
+      if (username === "admin" && password === "password") {
+        req.session.user = "admin";
+        next();
+      } else {
+        let err = new Error("You are not authenticated!");
+        err.status = 401;
+        res.setHeader("WWW-Authenticate", "Basic");
+        next(err);
+      }
+    }
+  } else if (sessionUser === "admin") {
+    next();
+  } else {
+    let err = new Error("You are not authenticated!");
+    err.status = 401;
+    res.setHeader("WWW-Authenticate", "Basic");
+    next(err);
+  }
+};
+
+// Session + Basic Auth
+app.use(sessionAuthen);
 
 app.use(express.static(path.join(__dirname, "public")));
 
