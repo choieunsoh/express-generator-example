@@ -15,10 +15,11 @@ const promotionsRouter = require("./routes/promotionsRouter");
 const leadersRouter = require("./routes/leadersRouter");
 
 require("dotenv").config();
+const { MONGO_DB } = process.env;
+
 const mongoose = require("mongoose");
-const url = process.env.MONGO_DB;
 mongoose
-  .connect(url)
+  .connect(MONGO_DB)
   .then((db) => {
     console.log("Connected correctly to server.");
   })
@@ -36,7 +37,7 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 //app.use(cookieParser("12345-67890-09876-54321"));
-app.use(
+/*app.use(
   session({
     name: "session-id",
     secret: "12345-67890-09876-54321",
@@ -44,10 +45,10 @@ app.use(
     resave: false,
     store: new FileStore(),
   })
-);
+);*/
 
 app.use(passport.initialize());
-app.use(passport.session());
+//app.use(passport.session());
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
@@ -139,8 +140,6 @@ const passportAuthen = (req, res, next) => {
     next();
   }
 };
-// Passport Auth
-app.use(passportAuthen);
 
 app.use(express.static(path.join(__dirname, "public")));
 
