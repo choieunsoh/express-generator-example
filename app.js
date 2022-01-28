@@ -13,6 +13,7 @@ const usersRouter = require("./routes/users");
 const dishesRouter = require("./routes/dishesRouter");
 const promotionsRouter = require("./routes/promotionsRouter");
 const leadersRouter = require("./routes/leadersRouter");
+const uploadRouter = require("./routes/uploadRouter");
 
 require("dotenv").config();
 const { MONGO_DB } = process.env;
@@ -156,6 +157,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/dishes", dishesRouter);
 app.use("/promotions", promotionsRouter);
 app.use("/leaders", leadersRouter);
+app.use("/imageUpload", uploadRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
