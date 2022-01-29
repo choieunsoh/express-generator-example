@@ -9,6 +9,7 @@ const storage = multer.diskStorage({
     callback(null, file.originalname);
   },
 });
+const { cors, corsWithOptions } = require("./cors");
 
 const fileFilter = (req, file, callback) => {
   if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
@@ -30,12 +31,16 @@ uploadRouter.use(bodyParser.json());
 
 uploadRouter
   .route("/")
-  .get(verifyUser, verifyAdmin, (req, res, next) => {
+  .options(corsWithOptions, (req, res) => {
+    res.status(200);
+  })
+  .get(cors, verifyUser, verifyAdmin, (req, res, next) => {
     res.status(403);
     res.setHeader("Content-Type", "text/plain");
     res.end("GET not supported.");
   })
   .post(
+    corsWithOptions,
     verifyUser,
     verifyAdmin,
     upload.single("imageFile"),
@@ -45,12 +50,12 @@ uploadRouter
       res.json(req.file);
     }
   )
-  .put(verifyUser, verifyAdmin, (req, res, next) => {
+  .put(corsWithOptions, verifyUser, verifyAdmin, (req, res, next) => {
     res.status(403);
     res.setHeader("Content-Type", "text/plain");
     res.end("PUT not supported.");
   })
-  .delete(verifyUser, verifyAdmin, (req, res, next) => {
+  .delete(corsWithOptions, verifyUser, verifyAdmin, (req, res, next) => {
     res.status(403);
     res.setHeader("Content-Type", "text/plain");
     res.end("DELETE not supported.");

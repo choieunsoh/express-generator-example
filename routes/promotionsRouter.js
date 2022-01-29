@@ -2,13 +2,17 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const Promotions = require("../models/promotions");
 const { verifyUser, verifyAdmin } = require("../authenticate");
+const { cors, corsWithOptions } = require("./cors");
 
 const promotionRouter = express.Router();
 promotionRouter.use(bodyParser.json());
 
 promotionRouter
   .route("/")
-  .get((req, res, next) => {
+  .options(corsWithOptions, (req, res) => {
+    res.status(200);
+  })
+  .get(cors, (req, res, next) => {
     Promotions.find({})
       .then(
         (promotions) => {
@@ -20,7 +24,7 @@ promotionRouter
       )
       .catch((error) => next(error));
   })
-  .post(verifyUser, verifyAdmin, (req, res, next) => {
+  .post(corsWithOptions, verifyUser, verifyAdmin, (req, res, next) => {
     Promotions.create(req.body)
       .then(
         (promotion) => {
@@ -33,11 +37,11 @@ promotionRouter
       )
       .catch((error) => next(error));
   })
-  .put(verifyUser, verifyAdmin, (req, res, next) => {
+  .put(corsWithOptions, verifyUser, verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end(`PUT Not supported.`);
   })
-  .delete(verifyUser, verifyAdmin, (req, res, next) => {
+  .delete(corsWithOptions, verifyUser, verifyAdmin, (req, res, next) => {
     Promotions.deleteMany({})
       .then(
         (result) => {
@@ -53,7 +57,10 @@ promotionRouter
 
 promotionRouter
   .route("/:promoId")
-  .get((req, res, next) => {
+  .options(corsWithOptions, (req, res) => {
+    res.status(200);
+  })
+  .get(cors, (req, res, next) => {
     Promotions.findById(req.params.promoId)
       .then(
         (promotion) => {
@@ -65,11 +72,11 @@ promotionRouter
       )
       .catch((error) => next(error));
   })
-  .post(verifyUser, verifyAdmin, (req, res, next) => {
+  .post(corsWithOptions, verifyUser, verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end(`POST Not supported.`);
   })
-  .put(verifyUser, verifyAdmin, (req, res, next) => {
+  .put(corsWithOptions, verifyUser, verifyAdmin, (req, res, next) => {
     Promotions.findByIdAndUpdate(
       req.params.promoId,
       { $seet: req.body },
@@ -86,7 +93,7 @@ promotionRouter
       )
       .catch((error) => next(error));
   })
-  .delete(verifyUser, verifyAdmin, (req, res, next) => {
+  .delete(corsWithOptions, verifyUser, verifyAdmin, (req, res, next) => {
     Promotions.findByIdAndDelete(req.params.promoId)
       .then(
         (result) => {
