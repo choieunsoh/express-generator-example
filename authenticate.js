@@ -52,7 +52,7 @@ exports.facebookPassport = passport.use(
       clientSecret: FB_CLIENT_SECRET,
     },
     (accessToken, refreshToken, profile, done) => {
-      console.log("accessToken:\", accessToken);
+      console.log("accessToken:\n", accessToken);
       console.log("refreshToken:\n", refreshToken);
       console.log("profile:\n", profile);
       Users.findOne({ facebookId: profile.id })
