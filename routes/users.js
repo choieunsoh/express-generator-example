@@ -4,6 +4,7 @@ const Users = require("../models/users");
 const passport = require("passport");
 const { getToken, verifyUser, verifyAdmin } = require("../authenticate");
 const { cors, corsWithOptions } = require("./cors");
+const { authenticate } = require("passport");
 
 const router = express.Router();
 router.use(bodyParser.json());
@@ -81,5 +82,22 @@ router.get("/logout", corsWithOptions, (req, res, next) => {
     return next(err);
   }
 });
+
+router.get(
+  "/facebook/token",
+  passport.authenticate("facebook-token"),
+  (req, res) => {
+    if (req.user) {
+      const token = getToken({ _id: req.user._id });
+      res.status(200);
+      res.setHeader("Content-Type", "application/json");
+      res.json({
+        success: true,
+        token,
+        status: "You are successfully logged in.",
+      });
+    }
+  }
+);
 
 module.exports = router;
