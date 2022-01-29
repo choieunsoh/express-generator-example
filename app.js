@@ -14,6 +14,7 @@ const dishesRouter = require("./routes/dishesRouter");
 const promotionsRouter = require("./routes/promotionsRouter");
 const leadersRouter = require("./routes/leadersRouter");
 const uploadRouter = require("./routes/uploadRouter");
+const favoritesRouter = require("./routes/favoritesRouter");
 
 require("dotenv").config();
 const { MONGO_DB } = process.env;
@@ -158,6 +159,7 @@ app.use("/dishes", dishesRouter);
 app.use("/promotions", promotionsRouter);
 app.use("/leaders", leadersRouter);
 app.use("/imageUpload", uploadRouter);
+app.use("/favorites", favoritesRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
