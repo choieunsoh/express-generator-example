@@ -1,3 +1,11 @@
+# Server-side Development with NodeJS, Express and MongoDB 4
+
+### Coursera: https://www.coursera.org/learn/server-side-nodejs
+
+This repo is a part of self-learning at Coursera. I learned the basics of Node, MongoDB ,Mongoose, various authentications.
+
+I also use AWS MongoDB in this example.
+
 # Self-Signed
 
 ```bash
