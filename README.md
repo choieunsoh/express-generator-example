@@ -2,7 +2,7 @@
 
 ### Coursera: https://www.coursera.org/learn/server-side-nodejs
 
-This repo is a part of self-learning at Coursera. I learned the basics of Node, MongoDB ,Mongoose, various authentications.
+This repo is a part of self-learning at Coursera. I learned the basics of Node, Express, MongoDB ,Mongoose, various authentications.
 
 I also use AWS MongoDB in this example.
 
